@@ -11,18 +11,6 @@ The extension is licensed under [MIT](LICENSE.txt).
 * PHP v7.2+
 * CiviCRM 5.31+ (may work with earlier - untested)
 
-## Installation (CLI, Zip)
-
-**IMPORTANT**: You need to run `composer install` from within this extension's folder after downloading in order to get monolog installed properly.
-
-Sysadmins and developers may download the `.zip` file for this extension and
-install it with the command-line tool [cv](https://github.com/civicrm/cv).
-
-```bash
-cd <extension-dir>
-cv dl https://lab.civicrm.org/extensions/monolog/-/archive/master/monolog-master.zip
-```
-
 ## Installation (CLI, Git)
 
 **IMPORTANT**: You need to run `composer install` from within this extension's folder after downloading in order to get monolog installed properly.
@@ -32,6 +20,8 @@ install it with the command-line tool [cv](https://github.com/civicrm/cv).
 
 ```bash
 git clone https://lab.civicrm.org/extensions/monolog.git
+cd monolog
+composer install
 cv en monolog
 ```
 
