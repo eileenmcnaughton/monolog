@@ -37,6 +37,8 @@ cv en monolog
 
 ## Getting Started
 
+**IMPORTANT**: You need to run `composer install` from within this extension's folder after downloading in order to get monolog installed properly.
+
 1. Go to Administer - System Settings - Debugging and Error Handling.
 2. There'll be a new field where you can specify the folder path to where you want logs stored. (In real life will want this to be more configurable, e.g. network locations, different locations per channel, different output formats, etc... It should maybe be configured via a config file in the filesystem.)
 
