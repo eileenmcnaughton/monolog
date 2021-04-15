@@ -7,9 +7,10 @@ use CRM_Monolog_ExtensionUtil as E;
 // This is for hook_civicrm_container
 use Symfony\Component\DependencyInjection\Definition;
 
-// Workaround for loading monolog. Should probably check first if it's
-// already loaded, e.g. in case core ever includes it.
-require_once E::path('vendor/autoload.php');
+// checking if the file exists allows compilation elsewhere if desired.
+if (file_exists( __DIR__ . '/vendor/autoload.php')) {
+  require_once __DIR__ . '/vendor/autoload.php';
+}
 
 /**
  * Implements hook_civicrm_config().
