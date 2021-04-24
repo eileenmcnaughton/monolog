@@ -473,5 +473,11 @@ function _monolog_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
 function _monolog_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, []);
+  $entityTypes = array_merge($entityTypes, [
+    'CRM_Monolog_DAO_Monolog' => [
+      'name' => 'Monolog',
+      'class' => 'CRM_Monolog_DAO_Monolog',
+      'table' => 'civicrm_monolog',
+    ],
+  ]);
 }

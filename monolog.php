@@ -72,6 +72,10 @@ function monolog_civicrm_enable() {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
  */
 function monolog_civicrm_disable() {
+  $logManager = Civi::service('psr_log_manager');
+  if (is_a($logManager, '\Civi\MonoLog\MonologManager')) {
+    $logManager->disable();
+  }
   _monolog_civix_civicrm_disable();
 }
 
@@ -129,6 +133,7 @@ function monolog_civicrm_angularModules(&$angularModules) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
  */
 function monolog_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
+  $c = Civi::container();
   _monolog_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
@@ -179,5 +184,5 @@ function monolog_civicrm_themes(&$themes) {
 //}
 
 function monolog_civicrm_container($container) {
-  $container->setDefinition('psr_log', new Definition('\Civi\MonoLog\MonoLog', []))->setPublic(TRUE);
+  $container->setDefinition('psr_log_manager', new Definition('\Civi\MonoLog\MonologManager', []))->setPublic(TRUE);
 }
