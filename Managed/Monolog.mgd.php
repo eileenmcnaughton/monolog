@@ -29,7 +29,7 @@ return [
     ],
   ],
   [
-    'name' => 'daily_logger',
+    'name' => 'daily_log_file',
     'entity' => 'Monolog',
     'cleanup' => 'never',
     'update' => 'never',
@@ -38,10 +38,10 @@ return [
       'version' => 4,
       'checkPermissions' => FALSE,
       'values' => [
-        'name' => 'daily_logger',
+        'name' => 'daily_log_file',
         'channel' => 'default',
         'description' => E::ts('Log file for each day'),
-        'type' => 'daily_logger',
+        'type' => 'daily_log_file',
         'is_default' => FALSE,
         'is_active' => FALSE,
         'weight' => 2,

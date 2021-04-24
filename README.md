@@ -55,10 +55,10 @@ Out of the box 4 loggers are enabled and attached to the default
 as the normal CiviCRM logger with the exception that will delete older
    log files once there are 10 * 250MB logs in the directory. The
    size and number can be configured
-2) daily_logger, inactive. This is a potential alternative if you would
+2) daily_log_file, inactive. This is a potential alternative if you would
 prefer a new log file each day. The number of days to keep files for
    is 30 under the default configuration. It is expect you would disable
-   the log_file logger if you enable the daily_logger
+   the log_file logger if you enable the daily_log_file
 3) firephp, active. This logger kicks if in 1) the logged in user has 'view debug output'
 permission AND the login user has a [firephp browser extension](https://firephp.org/)
    installed. If so the debug output will appear in the firephp tab
