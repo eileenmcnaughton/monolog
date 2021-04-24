@@ -237,7 +237,7 @@ class CRM_Monolog_DAO_Monolog extends CRM_Core_DAO {
           'bao' => 'CRM_Monolog_DAO_Monolog',
           'localizable' => 0,
           'html' => [
-            'type' => 'Checkbox',
+            'type' => 'CheckBox',
           ],
           'add' => NULL,
         ],
@@ -251,7 +251,7 @@ class CRM_Monolog_DAO_Monolog extends CRM_Core_DAO {
           'bao' => 'CRM_Monolog_DAO_Monolog',
           'localizable' => 0,
           'html' => [
-            'type' => 'Checkbox',
+            'type' => 'CheckBox',
           ],
           'add' => NULL,
         ],

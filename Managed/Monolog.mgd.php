@@ -18,6 +18,7 @@ return [
         'channel' => 'default',
         'is_default' => TRUE,
         'is_active' => TRUE,
+        'is_final' => FALSE,
         'weight' => 1,
         'minimum_severity' => 'debug',
         'description' => E::ts('Default log to file. File is rotated at 250MB and only 10 files are kept'),
@@ -44,6 +45,7 @@ return [
         'type' => 'daily_log_file',
         'is_default' => FALSE,
         'is_active' => FALSE,
+        'is_final' => FALSE,
         'weight' => 2,
         'minimum_severity' => 'debug',
         'configuration_options' => [
@@ -68,6 +70,7 @@ return [
         'type' => 'firephp',
         'is_default' => FALSE,
         'is_active' => TRUE,
+        'is_final' => FALSE,
         'weight' => 2,
         'minimum_severity' => 'debug',
       ],

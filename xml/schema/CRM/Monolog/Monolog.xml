@@ -92,7 +92,7 @@
     <description>Lower weight handlers are applied first</description>
     <type>boolean</type>
     <html>
-      <type>Checkbox</type>
+      <type>CheckBox</type>
     </html>
   </field>
   <field>
@@ -101,7 +101,7 @@
     <description>If this is the final handler then lower weight handlers will not be applied</description>
     <type>boolean</type>
     <html>
-      <type>Checkbox</type>
+      <type>CheckBox</type>
     </html>
   </field>
   <field>

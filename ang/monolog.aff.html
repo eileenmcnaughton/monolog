@@ -1,13 +1,15 @@
 <af-form ctrl="afform">
   <af-entity url-autofill="1" type="Monolog" name="Monolog1" label="Monolog config" actions="{create: true, update: true}" security="RBAC" />
   <fieldset af-fieldset="Monolog1">
+    <af-field name="id" />
     <af-field name="name" />
     <af-field name="channel" />
     <af-field name="type" />
-    <af-field name="severity" />
+    <af-field name="minimum_severity" />
     <af-field name="description" />
     <af-field name="is_default" />
-    <af-field name="is_console_logging_enabled" />
+    <af-field name="is_active" />
+    <af-field name="is_final" />
     <p>Note that configuration options needs to be json and depending on the file type the available fields will vary</p>
     <af-field name="configuration_options" />
   </fieldset>
