@@ -18,7 +18,7 @@
   <version>1.0</version>
   <develStage>beta</develStage>
   <compatibility>
-    <ver>5.31</ver>
+    <ver>5.38</ver>
   </compatibility>
   <comments>Implementation of monolog logging library to support nuanced logging</comments>
   <classloader>
