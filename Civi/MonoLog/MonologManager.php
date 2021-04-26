@@ -2,7 +2,6 @@
 namespace Civi\MonoLog;
 
 use Civi\Core\LogManager;
-use Monolog\Handler\AbstractHandler;
 use sgoettsch\monologRotatingFileHandler\Handler\monologRotatingFileHandler;
 use Monolog\Logger;
 use Monolog\Handler\SyslogHandler;
@@ -31,7 +30,7 @@ class MonologManager {
    * During the disabling process we can hit an issue where
    * this is still registered but functions are no longer available.
    */
-  public function disable() {
+  public function disable(): void {
     $this->enabled = FALSE;
   }
 
@@ -47,6 +46,7 @@ class MonologManager {
    *
    * @return \Psr\Log\LoggerInterface
    * @throws \API_Exception
+   * @throws \Exception
    */
   public function getLog($channel = 'default'): LoggerInterface {
     if (!$this->enabled) {
@@ -83,7 +83,7 @@ class MonologManager {
    */
   protected function getMonologEntities(): array {
     if (!is_array($this->monologEntities)) {
-      $this->monologEntities = (array) \Civi\Api4\Monolog::get(FALSE)->addOrderBy('weight')->execute();
+      $this->monologEntities = (array) \Civi\Api4\Monolog::get(FALSE)->addWhere('is_active', '=', TRUE)->addOrderBy('weight')->execute();
     }
     return $this->monologEntities;
   }
@@ -105,6 +105,12 @@ class MonologManager {
     return $return;
   }
 
+  /**
+   * Get the default configured logger.
+   *
+   * @return array|false
+   * @throws \API_Exception
+   */
   protected function getDefaultLogger() {
     if ($this->enabled) {
       foreach ($this->getMonologEntities() as $monolog) {
@@ -113,6 +119,7 @@ class MonologManager {
         }
       }
     }
+    return FALSE;
   }
 
   /**
@@ -145,6 +152,7 @@ class MonologManager {
    * @param \Monolog\Logger $logger
    * @param string $minimumLevel
    * @param bool $isFinal
+   * @param $configurationOptions
    *
    * @throws \Exception
    */
@@ -159,6 +167,7 @@ class MonologManager {
    * @param \Monolog\Logger $logger
    * @param string $minimumLevel
    * @param bool $isFinal
+   * @param $configurationOptions
    */
   protected function addDailyFileLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal, $configurationOptions): void {
     $logger->pushHandler(new RotatingFileHandler($this->getLogFileName($channel), $configurationOptions['max_files'], $minimumLevel, !$isFinal));
@@ -173,7 +182,7 @@ class MonologManager {
    *
    * @return string
    */
-  protected function getLogFileName($channel): string {
+  protected function getLogFileName(string $channel): string {
     $cacheKey = ($channel === 'default') ? 'logger_file' : 'logger_file' . $channel;
     $prefixString = ($channel === 'default') ? '' : ($channel . '.');
 
@@ -201,6 +210,8 @@ class MonologManager {
    * @param \Monolog\Logger $logger
    * @param string $minimumLevel
    * @param bool $isFinal
+   *
+   * @noinspection PhpUnusedParameterInspection
    */
   protected function addFirePhpLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal): void {
     if (\CRM_Core_Permission::check('view debug output')) {
@@ -224,6 +235,8 @@ class MonologManager {
   }
 
   /**
+   * @param $channel
+   *
    * @return \Psr\Log\LoggerInterface
    */
   protected function getBuiltInLogger($channel): LoggerInterface {
