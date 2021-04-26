@@ -94,7 +94,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":false,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => FALSE,
                       'name' => 'description',
                       'value' => 'description',
                     ],
@@ -106,7 +106,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":true,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => TRUE,
                       'name' => 'type',
                       'value' => 'type',
                     ],
@@ -118,7 +118,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":true,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => TRUE,
                       'name' => 'type',
                       'value' => 'type',
                     ],
@@ -130,7 +130,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":false,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => FALSE,
                       'name' => 'weight',
                       'value' => 'weight',
                     ],
@@ -142,7 +142,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":false,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => FALSE,
                       'name' => 'is_active',
                       'value' => 'is_active',
                     ],
@@ -154,7 +154,7 @@ return [
                     'type' => 'field',
                     'editable' => [
                       'entity' => 'Monolog',
-                      'options":false,"serialize":false,"fk_entity":null,"id' => 'id',
+                      'options' => FALSE,
                       'name' => 'is_final',
                       'value' => 'is_final',
                     ],
