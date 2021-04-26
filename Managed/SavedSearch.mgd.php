@@ -9,11 +9,16 @@ use CRM_Monolog_ExtensionUtil as E;
 
 // Install search display if searchkit is installed.
 if (!civicrm_api3('Extension', 'getcount', [
+  'full_name' => 'org.civicrm.search_kit',
+  'status' => 'installed',
+])
+ && !civicrm_api3('Extension', 'getcount', [
   // Once we are fully on 5.38 we only need to check search_kit
   // as the renaming will be complete.
-  'full_name' => ['IN', ['org.civicrm.search_kit', 'org.civicrm.search']],
+  'full_name' => 'org.civicrm.search',
   'status' => 'installed',
-])) {
+])
+) {
   return [];
 }
 
