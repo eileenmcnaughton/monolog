@@ -18,5 +18,7 @@
 SET FOREIGN_KEY_CHECKS=0;
 
 DROP TABLE IF EXISTS `civicrm_monolog`;
-
+# We are not letting managed clean these up as it does not know how to
+# deal with v4 api yet but the table is dropped so we clean them out"
+DELETE FROM civicrm_managed WHERE entity_type = 'Monolog';
 SET FOREIGN_KEY_CHECKS=1;
