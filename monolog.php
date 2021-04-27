@@ -72,6 +72,10 @@ function monolog_civicrm_enable() {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_disable
  */
 function monolog_civicrm_disable() {
+  $logManager = Civi::service('psr_log_manager');
+  if (is_a($logManager, '\Civi\MonoLog\MonologManager')) {
+    $logManager->disable();
+  }
   _monolog_civix_civicrm_disable();
 }
 
@@ -129,6 +133,7 @@ function monolog_civicrm_angularModules(&$angularModules) {
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_alterSettingsFolders
  */
 function monolog_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
+  $c = Civi::container();
   _monolog_civix_civicrm_alterSettingsFolders($metaDataFolders);
 }
 
@@ -166,18 +171,38 @@ function monolog_civicrm_themes(&$themes) {
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu
  */
-//function monolog_civicrm_navigationMenu(&$menu) {
-//  _monolog_civix_insert_navigation_menu($menu, 'Mailings', array(
-//    'label' => E::ts('New subliminal message'),
-//    'name' => 'mailing_subliminal_message',
-//    'url' => 'civicrm/mailing/subliminal',
-//    'permission' => 'access CiviMail',
-//    'operator' => 'OR',
-//    'separator' => 0,
-//  ));
-//  _monolog_civix_navigationMenu($menu);
-//}
+function monolog_civicrm_navigationMenu(&$menu) {
+  _monolog_civix_insert_navigation_menu($menu, 'Administer/Customize Data and Screens', [
+    'label' => E::ts('Monolog'),
+    'name' => 'Monolog',
+    'url' => '',
+    'permission' => 'administer CiviCRM system',
+    'operator' => 'OR',
+    'separator' => 0,
+  ]);
+  _monolog_civix_navigationMenu($menu);
+
+  _monolog_civix_insert_navigation_menu($menu, 'Administer/Customize Data and Screens/Monolog', [
+    'label' => E::ts('Add Monolog'),
+    'name' => 'monolog_add',
+    'url' => 'civicrm/monolog',
+    'permission' => 'administer CiviCRM system',
+    'operator' => 'OR',
+    'separator' => 0,
+  ]);
+
+  _monolog_civix_insert_navigation_menu($menu, 'Administer/Customize Data and Screens/Monolog', [
+    'label' => E::ts('Configured Monologs'),
+    'name' => 'monolog_search',
+    'url' => 'civicrm/search#/display/Monolog%20configuration/Monologs',
+    'permission' => 'administer CiviCRM system',
+    'operator' => 'OR',
+    'separator' => 0,
+  ]);
+
+  _monolog_civix_navigationMenu($menu);
+}
 
 function monolog_civicrm_container($container) {
-  $container->setDefinition('psr_log', new Definition('\Civi\MonoLog\MonoLog', []))->setPublic(TRUE);
+  $container->setDefinition('psr_log_manager', new Definition('\Civi\MonoLog\MonologManager', []))->setPublic(TRUE);
 }
