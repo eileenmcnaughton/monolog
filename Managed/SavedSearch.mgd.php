@@ -39,6 +39,7 @@ return [
             'is_final',
             'is_default',
           ],
+          'orderBy' => ['weight' => 'ASC'],
         ],
       ],
     ],
