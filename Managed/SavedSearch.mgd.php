@@ -19,8 +19,8 @@ return [
   [
     'name' => 'Monolog configuration',
     'entity' => 'SavedSearch',
-    'cleanup' => 'never',
-    'update' => 'never',
+    'update' => 'unmodified',
+    'cleanup' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
@@ -42,7 +42,6 @@ return [
             'is_final',
             'is_default',
           ],
-          'orderBy' => ['weight', 'ASC'],
         ],
       ],
     ],
@@ -50,8 +49,8 @@ return [
   [
     'name' => 'Monolog display',
     'entity' => 'SearchDisplay',
-    'cleanup' => 'never',
-    'update' => 'never',
+    'update' => 'unmodified',
+    'cleanup' => 'unmodified',
     'params' => [
       'version' => 4,
       'values' => [
@@ -66,6 +65,14 @@ return [
           'pager' => ['show_count' => TRUE],
           'sort' => [
             ['weight', 'ASC'],
+          ],
+          'cssRules' => [
+            [
+              'disabled',
+              'is_active',
+              '=',
+              FALSE,
+            ],
           ],
           'columns' => [
             [
