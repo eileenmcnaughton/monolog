@@ -2,10 +2,7 @@
 
 use CRM_Monolog_ExtensionUtil as E;
 
-// This file declares a managed database record of type "ReportTemplate".
-// The record will be automatically inserted, updated, or deleted from the
-// database as appropriate. For more details, see "hook_civicrm_managed" at:
-// http://wiki.civicrm.org/confluence/display/CRMDOC42/Hook+Reference
+// This file declares a managed SavedSearch and SearchDisplay
 
 // Install search display if searchkit is installed.
 if (!civicrm_api3('Extension', 'getcount', [
@@ -20,7 +17,7 @@ return [
     'name' => 'Monolog configuration',
     'entity' => 'SavedSearch',
     'update' => 'unmodified',
-    'cleanup' => 'unmodified',
+    'cleanup' => 'unused',
     'params' => [
       'version' => 4,
       'values' => [
@@ -50,7 +47,7 @@ return [
     'name' => 'Monolog display',
     'entity' => 'SearchDisplay',
     'update' => 'unmodified',
-    'cleanup' => 'unmodified',
+    'cleanup' => 'unused',
     'params' => [
       'version' => 4,
       'values' => [
@@ -59,6 +56,7 @@ return [
         'saved_search_id.name' => 'Monolog configuration',
         'type' => 'table',
         'actions' => TRUE,
+        'acl_bypass' => FALSE,
         'settings' => [
           'limit' => 50,
           'classes' => ['table', 'table-striped'],
