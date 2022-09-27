@@ -234,9 +234,22 @@ class MonologManager {
   }
 
   /**
-   * Add FirePhp Logger.
+   * Add Standard out Logger.
    *
-   * See https://firephp.org/
+   * This logs to standard out when run from the command line.
+   *
+   * Note that is supports verbosity flags :
+   *
+   *  // Drush parameters https://groups.drupal.org/drush/commands
+   *  -v  =>  'notice',
+   * --verbose' => 'notice',
+   * --debug' => 'debug',
+   * -d' => 'debug',
+   * -q' => 'error',
+   * --quiet' => 'error',
+   * // https://symfony.com/doc/current/logging/monolog_console.html
+   * -vv' => 'info',
+   * -vvv' => 'debug',
    *
    * @param string $channel
    * @param \Monolog\Logger $logger
@@ -252,19 +265,25 @@ class MonologManager {
       // line efforts to increase or decrease logging levels.
       $modifiers = [
         // Drush parameters https://groups.drupal.org/drush/commands
-        '-v' =>  'info',
-        '--verbose' => 'info',
+        '-v' =>  'notice',
+        '--verbose' => 'notice',
         '--debug' => 'debug',
         '-d' => 'debug',
         '-q' => 'error',
         '--quiet' => 'error',
+        // https://symfony.com/doc/current/logging/monolog_console.html
+        '-vv' => 'info',
+        '-vvv' => 'debug',
       ];
       foreach ($argv as $argument) {
         if (isset($modifiers[$argument])) {
           $minimumLevel = $modifiers[$argument];
         }
       }
-      $logger->pushHandler(new StreamHandler('php://stdout', $minimumLevel, !$isFinal));
+      $formatter = new LineFormatter("%channel%.%level_name%: %message% %extra%\n", NULL, TRUE, TRUE);
+      $handler = new StreamHandler('php://stdout', $minimumLevel, !$isFinal);
+      $handler->setFormatter($formatter);
+      $logger->pushHandler($handler);
     }
   }
 
