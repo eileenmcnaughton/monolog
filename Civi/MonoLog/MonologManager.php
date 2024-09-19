@@ -1,4 +1,5 @@
 <?php
+
 namespace Civi\MonoLog;
 
 use Civi\Api4\Entity;
@@ -35,7 +36,7 @@ class MonologManager {
    * the whole system is instantiated.
    *
    * @return bool
-   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
    */
   protected function isAvailable() {
     return $this->enabled &&
@@ -94,6 +95,9 @@ class MonologManager {
           if ($monolog['type'] === 'std_out') {
             $this->addStdOutLogger($channel, $this->channels[$channel], $monolog['minimum_severity'], (bool) $monolog['is_final']);
           }
+          if ($monolog['type'] === 'std_err') {
+            $this->addStdErrLogger($channel, $this->channels[$channel], $monolog['minimum_severity'], (bool) $monolog['is_final']);
+          }
         }
       }
       return $this->channels[$channel];
@@ -106,7 +110,7 @@ class MonologManager {
   /**
    * Get configured monologs.
    *
-   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
    */
   protected function getMonologEntities(): array {
     if (!is_array($this->monologEntities)) {
@@ -118,7 +122,7 @@ class MonologManager {
   /**
    * Get the monolog providers to attach to the channel.
    *
-   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
    * @throws \CRM_Core_Exception
    */
   protected function getMonologsByChannel($channel): array {
@@ -141,7 +145,7 @@ class MonologManager {
    * Get the default configured logger.
    *
    * @return array|false
-   * @throws \API_Exception
+   * @throws \CRM_Core_Exception
    */
   protected function getDefaultLogger() {
     if ($this->enabled) {
@@ -259,29 +263,45 @@ class MonologManager {
    * @noinspection PhpUnusedParameterInspection
    */
   protected function addStdOutLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal): void {
-    if (PHP_SAPI === 'cli') {
-      global $argv;
-      // The wordpress handler has this rather nice idea of respecting command
-      // line efforts to increase or decrease logging levels.
-      $modifiers = [
-        // Drush parameters https://groups.drupal.org/drush/commands
-        '-v' =>  'notice',
-        '--verbose' => 'notice',
-        '--debug' => 'debug',
-        '-d' => 'debug',
-        '-q' => 'error',
-        '--quiet' => 'error',
-        // https://symfony.com/doc/current/logging/monolog_console.html
-        '-vv' => 'info',
-        '-vvv' => 'debug',
-      ];
-      foreach ($argv as $argument) {
-        if (isset($modifiers[$argument])) {
-          $minimumLevel = $modifiers[$argument];
-        }
-      }
-      $formatter = new LineFormatter("%channel%.%level_name%: %message%\n", NULL, TRUE, TRUE);
+    if (PHP_SAPI === 'cli' && !defined('CIVICRM_TEST')) {
+      $minimumLevel = $this->adjustCommandLineMinimumLevel($minimumLevel);
+      $formatter = new LineFormatter("%channel%.%level_name%: %message% %extra%\n", NULL, TRUE, TRUE);
       $handler = new StreamHandler('php://stdout', $minimumLevel, !$isFinal);
+      $handler->setFormatter($formatter);
+      $logger->pushHandler($handler);
+    }
+  }
+
+  /**
+   * Add Standard err Logger.
+   *
+   * This logs to standard err when run from the command line.
+   *
+   * Note that is supports verbosity flags :
+   *
+   *  // Drush parameters https://groups.drupal.org/drush/commands
+   *  -v  =>  'notice',
+   * --verbose' => 'notice',
+   * --debug' => 'debug',
+   * -d' => 'debug',
+   * -q' => 'error',
+   * --quiet' => 'error',
+   * // https://symfony.com/doc/current/logging/monolog_console.html
+   * -vv' => 'info',
+   * -vvv' => 'debug',
+   *
+   * @param string $channel
+   * @param \Monolog\Logger $logger
+   * @param string $minimumLevel
+   * @param bool $isFinal
+   *
+   * @noinspection PhpUnusedParameterInspection
+   */
+  protected function addStdErrLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal): void {
+    if (PHP_SAPI === 'cli' && !defined('CIVICRM_TEST')) {
+      $minimumLevel = $this->adjustCommandLineMinimumLevel($minimumLevel);
+      $formatter = new LineFormatter("%channel%.%level_name%: %message% %context% %extra%\n", NULL, TRUE, TRUE);
+      $handler = new StreamHandler('php://stderr', $minimumLevel, !$isFinal);
       $handler->setFormatter($formatter);
       $logger->pushHandler($handler);
     }
@@ -317,7 +337,7 @@ class MonologManager {
     $syslog = new SyslogHandler($this->getChannelName($channel), LOG_USER, $minimumLevel, !$isFinal);
     // @todo Use the SyslogFormatter, requires Monolog 3.x
     //https://github.com/Seldaek/monolog/blob/main/src/Monolog/Formatter/SyslogFormatter.php
-    $formatter = new LineFormatter("%channel%.%level_name%: %message%");
+    $formatter = new LineFormatter("%channel%.%level_name%: %message% %context% %extra%");
     $syslog->setFormatter($formatter);
     $logger->pushHandler($syslog);
   }
@@ -330,6 +350,38 @@ class MonologManager {
   protected function getBuiltInLogger($channel): LoggerInterface {
     $manager = new LogManager();
     return $manager->getLog($channel);
+  }
+
+  /**
+   * Adjust the minimum alert level based on command line arguments.
+   *
+   * The wordpress handler has this rather nice idea of respecting command
+   * line efforts to increase or decrease logging levels.
+   *
+   * @param string $minimumLevel
+   *
+   * @return string
+   */
+  private function adjustCommandLineMinimumLevel(string $minimumLevel): string {
+    global $argv;
+    $modifiers = [
+      // Drush parameters https://groups.drupal.org/drush/commands
+      '-v' => 'notice',
+      '--verbose' => 'notice',
+      '--debug' => 'debug',
+      '-d' => 'debug',
+      '-q' => 'error',
+      '--quiet' => 'error',
+      // https://symfony.com/doc/current/logging/monolog_console.html
+      '-vv' => 'info',
+      '-vvv' => 'debug',
+    ];
+    foreach ($argv as $argument) {
+      if (isset($modifiers[$argument])) {
+        $minimumLevel = $modifiers[$argument];
+      }
+    }
+    return $minimumLevel;
   }
 
 }
