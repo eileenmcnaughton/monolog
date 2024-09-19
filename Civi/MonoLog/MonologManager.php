@@ -123,7 +123,6 @@ class MonologManager {
    * Get the monolog providers to attach to the channel.
    *
    * @throws \CRM_Core_Exception
-   * @throws \CRM_Core_Exception
    */
   protected function getMonologsByChannel($channel): array {
     $return = [];
