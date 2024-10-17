@@ -93,6 +93,27 @@ class CRM_Monolog_BAO_Monolog extends CRM_Monolog_DAO_Monolog {
       ],
       'syslog' => [],
       'firephp' => [],
+      'mail' => [
+        'to' => [
+          'description' => E::ts('Address to email'),
+          'type' => CRM_Utils_Type::T_STRING,
+          'title' => E::ts('To email'),
+          'required' => TRUE,
+        ],
+        'from' => [
+          'description' => E::ts('Address from email'),
+          'type' => CRM_Utils_Type::T_STRING,
+          'title' => E::ts('From email'),
+          'required' => FALSE,
+        ],
+        'subject' => [
+          'description' => E::ts('Subject of email'),
+          'type' => CRM_Utils_Type::T_STRING,
+          'title' => E::ts('Subject to email'),
+          'default' => E::ts('CiviCRM notification'),
+          'required' => TRUE,
+        ],
+      ],
     ];
   }
 
