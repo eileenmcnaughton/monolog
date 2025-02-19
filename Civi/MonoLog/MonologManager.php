@@ -163,7 +163,7 @@ class MonologManager {
       throw new \CRM_Core_Exception('monolog not installed yet');
     }
     foreach ($this->getMonologEntities() as $monolog) {
-      if ($monolog['channel'] === $channel) {
+      if ($monolog['channel'] === $channel || $monolog['channel'] === '*') {
         $return[] = $monolog;
       }
     }
