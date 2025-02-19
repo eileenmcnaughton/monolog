@@ -22,9 +22,9 @@ use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 class MonologManager {
 
   /**
-   * @var \Monolog\Handler\TestHandler
+   * @var \Monolog\Handler\TestHandler|null
    */
-  private static TestHandler $testHandlerSingleton;
+  private static ?TestHandler $testHandlerSingleton;
 
   /**
    * @return \Monolog\Handler\TestHandler
@@ -37,7 +37,7 @@ class MonologManager {
   }
 
   public static function flush(): void {
-    self::$testHandlerSingleton = new TestHandler();
+    self::$testHandlerSingleton = NULL;
   }
 
   /**
@@ -387,6 +387,8 @@ class MonologManager {
 
   protected function addTestLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal, array $configurationOptions): void {
     $handler = self::testHandlerSingleton();
+    $handler->setBubble(!$isFinal);
+    $handler->setLevel($minimumLevel);
     $logger->pushHandler($handler);
   }
 
