@@ -14,11 +14,9 @@ class CRM_Monolog_BAO_Monolog extends CRM_Monolog_DAO_Monolog {
       $validOptions = self::getOptionsForTypes()[$params['type']];
       foreach ($params['configuration_options'] as $key => $values) {
         if (isset($validOptions[$key]['type'])
-          && $validOptions[$key]['type'] === CRM_Utils_Type::T_INT
         ) {
-          // We only need to validate ints at the moment as that is all we have for now.
-          // https://lab.civicrm.org/dev/core/-/issues/2551 would ideally formalist this.
-          if (!is_int($values)) {
+          // https://lab.civicrm.org/dev/core/-/issues/2551 would ideally formalist / extend validation.
+          if ($validOptions[$key]['type'] === CRM_Utils_Type::T_INT && !is_int($values)) {
             unset($params['configuration_options'][$key]);
           }
         }
