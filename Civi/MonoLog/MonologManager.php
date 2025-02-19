@@ -7,6 +7,7 @@ use Civi\Core\LogManager;
 use Monolog\Formatter\HtmlFormatter;
 use Monolog\Handler\NativeMailerHandler;
 use Monolog\Handler\SymfonyMailerHandler;
+use Monolog\Handler\TestHandler;
 use sgoettsch\monologRotatingFileHandler\Handler\monologRotatingFileHandler;
 use Monolog\Logger;
 use Monolog\Handler\SyslogHandler;
@@ -19,6 +20,25 @@ use Monolog\Processor\PsrLogMessageProcessor;
 use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 
 class MonologManager {
+
+  /**
+   * @var \Monolog\Handler\TestHandler
+   */
+  private static TestHandler $testHandlerSingleton;
+
+  /**
+   * @return \Monolog\Handler\TestHandler
+   */
+  public static function testHandlerSingleton(): TestHandler {
+    if (!isset(self::$testHandlerSingleton)) {
+      self::$testHandlerSingleton = new TestHandler();
+    }
+    return self::$testHandlerSingleton;
+  }
+
+  public static function flush(): void {
+    self::$testHandlerSingleton = new TestHandler();
+  }
 
   /**
    * @var array
@@ -104,6 +124,9 @@ class MonologManager {
           }
           if ($monolog['type'] === 'mail') {
             $this->addSymfonyLogger($channel, $this->channels[$channel], $monolog['minimum_severity'], (bool) $monolog['is_final'], $monolog['configuration_options']);
+          }
+          if ($monolog['type'] === 'test') {
+            $this->addTestLogger($channel, $this->channels[$channel], $monolog['minimum_severity'], (bool) $monolog['is_final'], $monolog['configuration_options'] ?? []);
           }
         }
       }
@@ -357,6 +380,11 @@ class MonologManager {
     catch (ServiceNotFoundException $e) {
       $this->addMailLogger($channel, $logger, $minimumLevel, $isFinal, $configurationOptions);
     }
+  }
+
+  protected function addTestLogger(string $channel, Logger $logger, string $minimumLevel, bool $isFinal, array $configurationOptions): void {
+    $handler = self::testHandlerSingleton();
+    $logger->pushHandler($handler);
   }
 
   /**
